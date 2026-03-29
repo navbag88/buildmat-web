@@ -75,6 +75,7 @@ public class SecurityConfig {
                 .requestMatchers("/static/**").permitAll()
                 .requestMatchers("/public/**").permitAll()
                 .requestMatchers("/assets/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/**").permitAll()
                 .anyRequest().authenticated()
             )
             .headers(h -> h.frameOptions(f -> f.disable()))
