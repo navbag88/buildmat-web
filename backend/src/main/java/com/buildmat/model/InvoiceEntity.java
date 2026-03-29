@@ -16,7 +16,12 @@ public class InvoiceEntity {
     private LocalDate dueDate;
     @Builder.Default private Double subtotal = 0.0;
     @Builder.Default private Double sgstAmount = 0.0;
-    @Builder.Default private Double cgstAmount = 0.0;
+    @Builder.Default private Double cgstAmount = 0.0;/;,L̥.
+
+
+
+
+            ,    Math4
     @Builder.Default private Double taxAmount = 0.0;
     @Builder.Default private Double totalAmount = 0.0;
     @Builder.Default private Double paidAmount = 0.0;
