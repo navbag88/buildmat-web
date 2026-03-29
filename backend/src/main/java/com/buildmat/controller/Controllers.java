@@ -13,6 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
+// ═══ Health Controller ════════════════════════════════════════════════════════
+@RestController
+class HealthController {
+    @GetMapping("/api/health")
+    public ResponseEntity<?> health() { return ResponseEntity.ok(Map.of("status", "UP")); }
+}
+
 // ═══ Auth Controller ══════════════════════════════════════════════════════════
 @RestController @RequestMapping("/api/auth")
 @RequiredArgsConstructor
