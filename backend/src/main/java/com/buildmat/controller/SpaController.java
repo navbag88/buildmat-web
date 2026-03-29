@@ -34,7 +34,8 @@ public class SpaController {
      * Spring MVC resolves more-specific mappings first, so /api/** controllers
      * always win over this wildcard.
      */
-    @GetMapping(value = "/**", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = {"/{path:^(?!api|assets)[^\\.]*}", "/{path:^(?!api|assets)[^\\.]*}/**"},
+                produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<Resource> spa() {
         return ResponseEntity.ok()
                 .contentType(MediaType.TEXT_HTML)
