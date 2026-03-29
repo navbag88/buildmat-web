@@ -4,7 +4,7 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
 COPY frontend/ ./
-RUN npm run build
+RUN npm run build -- --outDir dist
 
 # ── Stage 2: Build Backend ─────────────────────────────────────────────────────
 FROM maven:3.9-eclipse-temurin-17 AS backend-build
@@ -25,9 +25,4 @@ COPY --from=backend-build /app/target/buildmat-web-1.0.0.jar app.jar
 ENV PORT=8080
 EXPOSE ${PORT}
 
-ENTRYPOINT ["java", \
-  "-Dserver.port=${PORT}", \
-  "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-railway}", \
-  "-XX:+UseContainerSupport", \
-  "-XX:MaxRAMPercentage=75", \
-  "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-railway} -XX:+UseContainerSupport -XX:MaxRAMPercentage=75 -jar app.jar"]
