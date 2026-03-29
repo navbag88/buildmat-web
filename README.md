@@ -32,7 +32,7 @@ Full-stack web app converted from the JavaFX desktop billing software.
    DATABASE_URL=jdbc:mysql://${MYSQLHOST}:${MYSQLPORT}/${MYSQLDATABASE}?useSSL=false&allowPublicKeyRetrieval=true
    DATABASE_USERNAME=${MYSQLUSER}
    DATABASE_PASSWORD=${MYSQLPASSWORD}
-   JWT_SECRET=YourLongRandomSecretKeyHere_AtLeast32Characters
+   JWT_SECRET=xW+PEQ8gmKGEYdZ8DOqBjipTDRxKh3/B9oodNsLiXN7Kh8oBDnoHZVBiF+J7E8zn
    FRONTEND_URL=https://your-app.railway.app
    ```
 

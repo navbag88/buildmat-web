@@ -1,9 +1,11 @@
-// ══ PaymentsPage ══════════════════════════════════════════════════════════════
+// ══ All imports ═══════════════════════════════════════════════════════════════
 import React, { useState, useEffect } from 'react'
 import { toast } from 'react-hot-toast'
-import { paymentsApi, INR } from '../utils/api.js'
-import { ExportButtons, DataTable, Spinner, useConfirm } from '../components/Shared.jsx'
+import { paymentsApi, reportsApi, usersApi, INR, downloadBlob } from '../utils/api.js'
+import { useAuth } from '../App.jsx'
+import { ExportButtons, DataTable, Spinner, useConfirm, Modal, Field, StatusBadge } from '../components/Shared.jsx'
 
+// ══ PaymentsPage ══════════════════════════════════════════════════════════════
 export function PaymentsPage() {
   const [payments, setPayments] = useState([])
   const [loading, setLoading]   = useState(true)
@@ -59,8 +61,6 @@ export function PaymentsPage() {
 export default PaymentsPage
 
 // ══ ReportsPage ═══════════════════════════════════════════════════════════════
-import { reportsApi, downloadBlob } from '../utils/api.js'
-
 const REPORTS = [
   { id: 'sales-summary',      label: '📈 Sales Summary',             needsDates: true },
   { id: 'outstanding',        label: '⚠️ Outstanding Invoices',       needsAsOf: true },
@@ -224,10 +224,6 @@ function ReportsPage() {
 export { ReportsPage }
 
 // ══ UsersPage ═════════════════════════════════════════════════════════════════
-import { usersApi } from '../utils/api.js'
-import { useAuth } from '../App.jsx'
-import { Modal, Field, StatusBadge } from '../components/Shared.jsx'
-
 function UsersPage() {
   const { isAdmin } = useAuth()
   const [users, setUsers]   = useState([])
@@ -309,7 +305,7 @@ function UserModal({ user, onClose, onSaved }) {
         <div className="grid grid-cols-2 gap-4">
           <Field label="Full Name" required><input className="input" value={form.fullName} onChange={e => set('fullName',e.target.value)} required /></Field>
           <Field label="Username" required>
-            <input className="input" value={form.username} onChange={e => set('username',e.target.value)} disabled={isEdit} required className={`input ${isEdit?'bg-gray-100':''}`} />
+            <input className={`input ${isEdit?'bg-gray-100':''}`} value={form.username} onChange={e => set('username',e.target.value)} disabled={isEdit} required />
           </Field>
           {!isEdit && <Field label="Password" required><input className="input" type="password" value={form.password} onChange={e => set('password',e.target.value)} required /></Field>}
           <Field label="Role">
@@ -360,4 +356,3 @@ function PwdModal({ user, onClose, onSaved }) {
 }
 
 export { UsersPage }
-export default PaymentsPage

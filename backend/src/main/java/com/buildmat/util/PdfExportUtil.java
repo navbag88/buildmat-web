@@ -76,7 +76,7 @@ public class PdfExportUtil {
         int rn=1;
         for (InvoiceItemEntity item : inv.getItems()) {
             boolean alt = rn++%2==0;
-            DeviceRgb bg = alt ? ALTBG : ColorConstants.WHITE;
+            DeviceRgb bg = alt ? ALTBG : new DeviceRgb(255,255,255);
             if (showGst) {
                 double gstAmt = item.getTotal()*(item.getSgstPercent()+item.getCgstPercent())/100;
                 addItemCells(items, bg, bold, reg, String.valueOf(rn-1), item.getProductName(), nvl(item.getUnit()),
@@ -118,14 +118,14 @@ public class PdfExportUtil {
     }
 
     // ── Export lists ───────────────────────────────────────────────────────────
-    public static byte[] exportCustomers(List<CustomerEntity> list) throws Exception {
+    public static byte[] exportCustomers(java.util.List<CustomerEntity> list) throws Exception {
         return simpleListPdf("Customers", "Total: "+list.size(), false,
             new String[]{"#","Name","Phone","Email","Address"},
             new float[]{6,26,15,22,31},
             list.stream().map(c -> new String[]{c.getId().toString(),c.getName(),nvl(c.getPhone()),nvl(c.getEmail()),nvl(c.getAddress())}).collect(Collectors.toList()));
     }
 
-    public static byte[] exportProducts(List<ProductEntity> list) throws Exception {
+    public static byte[] exportProducts(java.util.List<ProductEntity> list) throws Exception {
         return simpleListPdf("Products", "Total: "+list.size(), true,
             new String[]{"#","Name","Category","Unit","Price","Stock","SGST%","CGST%"},
             new float[]{4,26,14,8,12,10,8,8},
@@ -133,7 +133,7 @@ public class PdfExportUtil {
                 INR.format(p.getPrice()),fmt(p.getStockQty()),p.getSgstPercent()+"%",p.getCgstPercent()+"%"}).collect(Collectors.toList()));
     }
 
-    public static byte[] exportInvoices(List<InvoiceEntity> list) throws Exception {
+    public static byte[] exportInvoices(java.util.List<InvoiceEntity> list) throws Exception {
         return simpleListPdf("Invoices", "Total: "+list.size(), true,
             new String[]{"Invoice #","Customer","Date","Total","Paid","Balance","Status"},
             new float[]{14,20,10,13,12,13,8},
@@ -142,7 +142,7 @@ public class PdfExportUtil {
                 INR.format(i.getTotalAmount()-i.getPaidAmount()),i.getStatus()}).collect(Collectors.toList()));
     }
 
-    public static byte[] exportPayments(List<PaymentEntity> list) throws Exception {
+    public static byte[] exportPayments(java.util.List<PaymentEntity> list) throws Exception {
         return simpleListPdf("Payments", "Total: "+list.size(), true,
             new String[]{"Date","Invoice #","Customer","Amount","Method","Reference"},
             new float[]{12,15,22,15,12,24},
@@ -182,7 +182,7 @@ public class PdfExportUtil {
     }
 
     private static byte[] simpleListPdf(String title, String subtitle, boolean landscape,
-                                         String[] cols, float[] widths, List<String[]> rows) throws Exception {
+                                         String[] cols, float[] widths, java.util.List<String[]> rows) throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PageSize ps = landscape ? PageSize.A4.rotate() : PageSize.A4;
         Document doc = new Document(new PdfDocument(new PdfWriter(bos)), ps);
@@ -216,8 +216,8 @@ public class PdfExportUtil {
     }
 
     private static void addTotRow(Table t, PdfFont reg, PdfFont bold, String label, String value, boolean highlight) {
-        DeviceRgb bg = highlight ? BRAND : ColorConstants.WHITE;
-        DeviceRgb fg = highlight ? ColorConstants.WHITE : DARK;
+        DeviceRgb bg = highlight ? BRAND : new DeviceRgb(255,255,255);
+        DeviceRgb fg = highlight ? new DeviceRgb(255,255,255) : DARK;
         PdfFont font = highlight ? bold : reg;
         float size = highlight ? 12 : 9;
         t.addCell(new Cell().setBackgroundColor(bg).setPadding(7).setBorder(Border.NO_BORDER).add(new Paragraph(label).setFont(font).setFontSize(size).setFontColor(fg)));

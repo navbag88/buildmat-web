@@ -1,9 +1,6 @@
 package com.buildmat.security;
 
-import com.buildmat.model.UserEntity;
 import com.buildmat.repository.UserRepository;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +12,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.*;
@@ -27,48 +23,9 @@ import org.springframework.stereotype.*;
 import org.springframework.web.cors.*;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.crypto.SecretKey;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-// ── JWT Utility ────────────────────────────────────────────────────────────────
-@Component
-class JwtUtil {
-    @Value("${jwt.secret}") private String secret;
-    @Value("${jwt.expiry.ms:86400000}") private long expiryMs;
-
-    private SecretKey key() {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public String generate(String username, String role) {
-        return Jwts.builder()
-            .subject(username)
-            .claim("role", role)
-            .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + expiryMs))
-            .signWith(key())
-            .compact();
-    }
-
-    public String extractUsername(String token) {
-        return Jwts.parser().verifyWith(key()).build()
-            .parseSignedClaims(token).getPayload().getSubject();
-    }
-
-    public String extractRole(String token) {
-        return (String) Jwts.parser().verifyWith(key()).build()
-            .parseSignedClaims(token).getPayload().get("role");
-    }
-
-    public boolean isValid(String token) {
-        try { Jwts.parser().verifyWith(key()).build().parseSignedClaims(token); return true; }
-        catch (Exception e) { return false; }
-    }
-}
-
-// ── JWT Filter ─────────────────────────────────────────────────────────────────
 @Component
 @RequiredArgsConstructor
 class JwtFilter extends OncePerRequestFilter {
@@ -97,7 +54,6 @@ class JwtFilter extends OncePerRequestFilter {
     }
 }
 
-// ── Security Config ────────────────────────────────────────────────────────────
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
