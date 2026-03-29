@@ -13,13 +13,13 @@ COPY backend/pom.xml ./
 RUN mvn dependency:go-offline -q
 COPY backend/src ./src
 # Copy built frontend into Spring Boot static folder
-COPY --from=frontend-build /app/frontend/dist ./src/main/resources/static
+COPY --from=frontend-build ./frontend/dist ./src/main/resources/static
 RUN mvn clean package -DskipTests -q
 
 # ── Stage 3: Runtime ────────────────────────────────────────────────────────────
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=backend-build /app/target/buildmat-web-1.0.0.jar app.jar
+COPY --from=backend-build ./target/buildmat-web-1.0.0.jar app.jar
 
 # Railway sets PORT env var
 ENV PORT=8080
