@@ -27,22 +27,20 @@ public class SpaController {
     }
 
     /**
-     * Catch-all for any path that is not matched by a more specific mapping.
+     * Catch-all for SPA navigation routes.
      * Returns index.html so the React router can handle the path on the
      * client side.
      *
-     * The regex excludes:
-     *   - /api/**      – REST controllers
-     *   - /assets/**   – Vite-built JS/CSS bundles
-     *   - /static/**   – Spring Boot static resources
-     *   - /public/**   – public resources
-     *   - Any segment containing a dot (file extension), e.g. .js, .css, .png
+     * The regex {@code ^[^.]*} matches only path segments that contain no dot,
+     * which means paths with a file extension (e.g. /assets/app.css,
+     * /favicon.ico) are never matched here and fall through to Spring Boot's
+     * default static resource handler, which serves them with the correct
+     * MIME type.
      *
      * Spring MVC resolves more-specific mappings first, so /api/** controllers
-     * always win over this wildcard even without the regex guard.
+     * always win over this wildcard.
      */
-    @GetMapping(value = {"/{path:^(?!api|assets|static|public)[^\\.]*}",
-                         "/{path:^(?!api|assets|static|public)[^\\.]*}/**"},
+    @GetMapping(value = {"/{path:^[^.]*}", "/{path:^[^.]*}/**"},
                 produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<Resource> spa() {
         return ResponseEntity.ok()
