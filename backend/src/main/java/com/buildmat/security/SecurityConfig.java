@@ -67,7 +67,12 @@ public class SecurityConfig {
             .cors(c -> c.configurationSource(corsConfig()))
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(a -> a
-                .anyRequest().permitAll()
+                .requestMatchers("/api/health").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                    .requestMatchers("/assets/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .anyRequest().authenticated()
             )
             .headers(h -> h.frameOptions(f -> f.disable()))
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
